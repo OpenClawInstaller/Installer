@@ -1,0 +1,52 @@
+{
+  "@@locale": "en",
+  "appTitle": "OpenClaw Installer",
+  "appSubtitle": "Personal AI Assistant · {platform}",
+  "@appSubtitle": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "selectInstallMethod": "Select installation method",
+  "localInstall": "Local install (npm)",
+  "localInstallSubtitle": "Install directly to system, requires Node.js 22+",
+  "dockerInstall": "Docker install",
+  "dockerInstallSubtitle": "Containerized run, requires Docker",
+  "scriptInstall": "Official script install",
+  "scriptInstallSubtitle": "One-click install Node.js + OpenClaw (macOS/Linux/Windows)",
+  "aboutOpenClaw": "OpenClaw is an open-source personal AI assistant that can chat with you via WhatsApp, Telegram, Discord, and more.",
+  "learnMore": "Learn more → openclaw.ai",
+  "checkingEnv": "Checking environment...",
+  "needNodeJs": "Node.js 22+ required",
+  "needDocker": "Docker required",
+  "nodeJsTitle": "Node.js 22+",
+  "nodeJsDesc": "OpenClaw local install requires Node.js 22 or higher",
+  "downloadNodeJs": "Download Node.js",
+  "downloadFailed": "Download failed",
+  "installNow": "Install now",
+  "builtinDownload": "Built-in download",
+  "browserDownload": "Browser download",
+  "restartAfterNode": "Please restart this installer after installation",
+  "dockerDesktopTitle": "Docker Desktop",
+  "dockerDesktopDesc": "Docker installation requires Docker Desktop",
+  "downloadDocker": "Download Docker",
+  "linuxDockerHint": "Linux users please refer to official docs for Docker Engine",
+  "restartAfterDocker": "Please restart this installer after Docker is installed and running",
+  "back": "Back",
+  "recheck": "Recheck",
+  "continueInstall": "Continue install",
+  "localInstallTitle": "Local install",
+  "dockerInstallTitle": "Docker install",
+  "scriptInstallTitle": "Script install",
+  "startInstall": "Start install",
+  "installing": "Installing...",
+  "installComplete": "Install complete",
+  "installSuccess": "Installation complete!",
+  "installEnded": "Installation ended",
+  "installSuccessDesc": "OpenClaw has been installed successfully. You can open the control panel to complete initial setup.",
+  "installEndedDesc": "Please check the log above for details. Visit openclaw.ai for help.",
+  "openControlPanel": "Open control panel",
+  "reinstall": "Reinstall"
+}

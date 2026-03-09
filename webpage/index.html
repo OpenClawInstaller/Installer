@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OpenClaw Installer - Cross-platform graphical installer for OpenClaw open-source personal AI assistant. Supports Windows, macOS and Linux. One-click install with npm and Docker.">
+    <meta name="keywords" content="OpenClaw, OpenClaw Installer, AI assistant installer, cross-platform, Windows, macOS, Linux, npm, Docker, open source">
+    <meta name="author" content="OpenClaw Installer">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://openclaw-installer.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://openclaw-installer.com/">
+    <meta property="og:title" content="OpenClaw Installer - Graphical Installer">
+    <meta property="og:description" content="Cross-platform graphical installer for OpenClaw open-source AI assistant. Supports Windows, macOS and Linux.">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OpenClaw Installer - Graphical Installer">
+    <meta name="twitter:description" content="Cross-platform graphical installer for OpenClaw open-source AI assistant.">
+
+    <title>OpenClaw Installer - Graphical Installer | Cross-Platform One-Click Install</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"SoftwareApplication","name":"OpenClaw Installer","applicationCategory":"UtilitiesApplication","operatingSystem":"Windows, macOS, Linux","description":"Cross-platform graphical installer for OpenClaw open-source personal AI assistant.","url":"https://openclaw-installer.com","downloadUrl":"https://github.com/OpenClawInstaller/Installer/releases","author":{"@type":"Organization","name":"OpenClaw Installer","url":"https://github.com/OpenClawInstaller"}}
+    </script>
+
+    <script src="lang/translations.js"></script>
+    <script src="js/i18n.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">◈</span>
+                <span>OpenClaw Installer</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="download.html" data-i18n="nav.download">Download</a></li>
+                <li><a href="https://github.com/OpenClawInstaller/Installer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer" data-i18n="nav.openclaw_site">OpenClaw</a></li>
+                <li class="lang-wrap"><select id="lang-select" class="lang-select" aria-label="Language"></select></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-i18n="hero.title">OpenClaw Graphical Installer</h1>
+                <p class="hero-subtitle" data-i18n-html="hero.subtitle">Cross-platform graphical installer for <a href="https://openclaw.ai" target="_blank" rel="noopener">OpenClaw</a> open-source personal AI assistant</p>
+                <p class="hero-desc" data-i18n="hero.desc">Supports Windows, macOS and Linux. One-click install and configuration.</p>
+                <div class="hero-actions">
+                    <a href="download.html" class="btn btn-primary" data-i18n="hero.download">Download Now</a>
+                    <a href="https://github.com/OpenClawInstaller/Installer" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" data-i18n="hero.source">View Source</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2 data-i18n="features.title">Features</h2>
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-i18n="features.dual_mode.title">Dual Install Modes</h3>
+                    <p data-i18n="features.dual_mode.desc">Local npm install and Docker container install for different use cases</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 data-i18n="features.env_check.title">Environment Detection</h3>
+                    <p data-i18n="features.env_check.desc">Auto-detect Node.js 22+ and Docker, smart configuration guidance</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3 data-i18n="features.deps_guide.title">Dependency Guide</h3>
+                    <p data-i18n="features.deps_guide.desc">Official Node.js / Docker download links when environment is missing</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 data-i18n="features.one_click.title">One-Click Install</h3>
+                    <p data-i18n="features.one_click.desc">Graphical UI for install and config, no command line required</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="platforms">
+            <h2 data-i18n="platforms.title">Supported Platforms</h2>
+            <div class="platform-list">
+                <div class="platform-item">
+                    <span class="platform-icon">🪟</span>
+                    <span data-i18n="platforms.windows">Windows</span>
+                </div>
+                <div class="platform-item">
+                    <span class="platform-icon">🍎</span>
+                    <span data-i18n="platforms.macos">macOS</span>
+                </div>
+                <div class="platform-item">
+                    <span class="platform-icon">🐧</span>
+                    <span data-i18n="platforms.linux">Linux</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="requirements">
+            <h2 data-i18n="requirements.title">System Requirements</h2>
+            <div class="req-grid">
+                <div class="req-card">
+                    <h3 data-i18n="requirements.local.title">Local (npm)</h3>
+                    <ul>
+                        <li data-i18n="requirements.local.items.0">Node.js 22+ (LTS recommended)</li>
+                        <li data-i18n="requirements.local.items.1">npm 10+ or pnpm 9+</li>
+                    </ul>
+                </div>
+                <div class="req-card">
+                    <h3 data-i18n="requirements.docker.title">Docker</h3>
+                    <ul>
+                        <li data-i18n="requirements.docker.items.0">Docker Desktop (Windows/macOS)</li>
+                        <li data-i18n="requirements.docker.items.1">Docker Engine (Linux)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-openclaw">
+            <h2 data-i18n="about.title">About OpenClaw</h2>
+            <p data-i18n="about.intro">OpenClaw is an open-source personal AI assistant supporting:</p>
+            <ul class="openclaw-features">
+                <li data-i18n="about.features.0">WhatsApp, Telegram, Discord, Slack, Signal, iMessage and more</li>
+                <li data-i18n="about.features.1">Persistent memory and personalized config</li>
+                <li data-i18n="about.features.2">Browser control, file access, skill extensions</li>
+            </ul>
+            <p><a href="https://openclaw.ai" target="_blank" rel="noopener" data-i18n="about.visit">Visit OpenClaw →</a></p>
+        </section>
+
+        <section class="cta">
+            <h2 data-i18n="cta.title">Get Started</h2>
+            <p data-i18n="cta.desc">Choose your OS, download and install OpenClaw Installer</p>
+            <a href="download.html" class="btn btn-primary btn-large" data-i18n="cta.btn">Download</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p data-i18n-html="footer.license">OpenClaw Installer is open source under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a></p>
+            <p><a href="https://github.com/OpenClawInstaller/Installer" target="_blank" rel="noopener noreferrer" data-i18n="footer.repo">GitHub</a> · <a href="https://openclaw.ai" target="_blank" rel="noopener" data-i18n="footer.site">OpenClaw</a></p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Download OpenClaw Installer - Cross-platform graphical installer for Windows, macOS and Linux. Get the latest from GitHub Releases.">
+    <meta name="keywords" content="OpenClaw Installer download, Windows, macOS, Linux">
+    <meta name="author" content="OpenClaw Installer">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://openclaw-installer.com/download.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://openclaw-installer.com/download.html">
+    <meta property="og:title" content="Download OpenClaw Installer">
+    <meta property="og:description" content="Download cross-platform graphical installer for Windows, macOS and Linux.">
+    <meta property="og:locale" content="en_US">
+
+    <title>Download OpenClaw Installer - Windows / macOS / Linux | openclaw-installer.com</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebPage","name":"Download OpenClaw Installer","description":"Download cross-platform graphical installer for Windows, macOS and Linux.","url":"https://openclaw-installer.com/download.html"}
+    </script>
+
+    <script src="lang/translations.js"></script>
+    <script src="js/i18n.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">◈</span>
+                <span>OpenClaw Installer</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="download.html" data-i18n="nav.download">Download</a></li>
+                <li><a href="https://github.com/OpenClawInstaller/Installer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer" data-i18n="nav.openclaw_site">OpenClaw</a></li>
+                <li class="lang-wrap"><select id="lang-select" class="lang-select" aria-label="Language"></select></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1 data-i18n="download_page.title">Download OpenClaw Installer</h1>
+            <p data-i18n="download_page.subtitle">Choose your OS and get the latest from GitHub Releases</p>
+        </section>
+
+        <section class="download-section">
+            <div class="download-grid">
+                <article class="download-card">
+                    <div class="download-icon">🪟</div>
+                    <h2 data-i18n="download_page.windows.title">Windows</h2>
+                    <p data-i18n="download_page.windows.desc">Desktop installer for Windows 10/11</p>
+                    <a href="https://github.com/OpenClawInstaller/Installer/releases" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-i18n="download_page.windows.btn">Download on GitHub</a>
+                    <p class="download-note" data-i18n-html="download_page.windows.note">Download <code>.exe</code> or <code>.msix</code></p>
+                </article>
+                <article class="download-card">
+                    <div class="download-icon">🍎</div>
+                    <h2 data-i18n="download_page.macos.title">macOS</h2>
+                    <p data-i18n="download_page.macos.desc">For Intel and Apple Silicon (M1/M2/M3) Mac</p>
+                    <a href="https://github.com/OpenClawInstaller/Installer/releases" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-i18n="download_page.macos.btn">Download on GitHub</a>
+                    <p class="download-note" data-i18n-html="download_page.macos.note">Download <code>.dmg</code> or <code>.app</code></p>
+                </article>
+                <article class="download-card">
+                    <div class="download-icon">🐧</div>
+                    <h2 data-i18n="download_page.linux.title">Linux</h2>
+                    <p data-i18n="download_page.linux.desc">For x64 Linux desktop</p>
+                    <a href="https://github.com/OpenClawInstaller/Installer/releases" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-i18n="download_page.linux.btn">Download on GitHub</a>
+                    <p class="download-note" data-i18n-html="download_page.linux.note">Download <code>.AppImage</code> or <code>.deb</code></p>
+                </article>
+            </div>
+        </section>
+
+        <section class="install-steps">
+            <h2 data-i18n="download_page.steps.title">Installation Steps</h2>
+            <ol class="steps-list">
+                <li>
+                    <strong data-i18n="download_page.steps.step1.title">Choose Install Mode</strong>
+                    <p data-i18n="download_page.steps.step1.p1">Local: npm global install, requires Node.js 22+</p>
+                    <p data-i18n="download_page.steps.step1.p2">Docker: official image, requires Docker</p>
+                </li>
+                <li>
+                    <strong data-i18n="download_page.steps.step2.title">Environment Check</strong>
+                    <p data-i18n="download_page.steps.step2.p">If Node.js or Docker is missing, the installer shows download links. After installing, restart and click "Re-check".</p>
+                </li>
+                <li>
+                    <strong data-i18n="download_page.steps.step3.title">Install</strong>
+                    <p data-i18n="download_page.steps.step3.p1">Local: run npm install -g openclaw@latest and config wizard</p>
+                    <p data-i18n="download_page.steps.step3.p2">Docker: pull ghcr.io/openclaw/openclaw:latest and start container</p>
+                </li>
+                <li>
+                    <strong data-i18n="download_page.steps.step4.title">Done</strong>
+                    <p data-i18n-html="download_page.steps.step4.p">Open control panel <a href="http://127.0.0.1:18789/" target="_blank" rel="noopener">http://127.0.0.1:18789/</a> for first-time setup</p>
+                </li>
+            </ol>
+        </section>
+
+        <section class="build-from-source">
+            <h2 data-i18n="download_page.build.title">Build from Source</h2>
+            <p class="build-intro" data-i18n-html="download_page.build.intro_html">To build yourself, install <a href="https://flutter.dev" target="_blank" rel="noopener">Flutter</a>, then run:</p>
+            <pre class="code-block"><code># Clone repository
+git clone https://github.com/OpenClawInstaller/Installer.git
+cd Installer
+
+# Install dependencies
+flutter pub get
+
+# Build (choose platform)
+flutter build macos    # macOS
+flutter build windows # Windows
+flutter build linux   # Linux</code></pre>
+        </section>
+
+        <section class="cta">
+            <p><span data-i18n="download_page.issues">Having issues? Report on</span> <a href="https://github.com/OpenClawInstaller/Installer/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a></p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p data-i18n-html="footer.license">OpenClaw Installer is open source under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a></p>
+            <p><a href="https://github.com/OpenClawInstaller/Installer" target="_blank" rel="noopener noreferrer" data-i18n="footer.repo">GitHub</a> · <a href="https://openclaw.ai" target="_blank" rel="noopener" data-i18n="footer.site">OpenClaw</a></p>
+        </div>
+    </footer>
+</body>
+</html>
