@@ -43,5 +43,6 @@
   "openControlPanel": "打开控制面板",
   "reinstall": "重新安装",
   "terminalInputHint": "在此输入并按回车发送到进程",
-  "terminalSend": "发送"
+  "terminalSend": "发送",
+  "errorLogTitle": "错误日志"
 }

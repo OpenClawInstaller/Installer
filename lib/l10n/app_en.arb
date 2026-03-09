@@ -50,5 +50,6 @@
   "openControlPanel": "Open control panel",
   "reinstall": "Reinstall",
   "terminalInputHint": "Type here and press Enter to send input to the process",
-  "terminalSend": "Send"
+  "terminalSend": "Send",
+  "errorLogTitle": "Error log"
 }

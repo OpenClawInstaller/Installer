@@ -899,6 +899,45 @@ class _InstallerScreenState extends State<InstallerScreen> {
               height: 1.5,
             ),
           ),
+          if (!_installSuccess && _logLines.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Text(
+              l10n.errorLogTitle,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: colors.warningColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              constraints: const BoxConstraints(maxHeight: 240),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: _logLines
+                      .map((line) => Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: SelectableText(
+                              line,
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                                fontSize: 11,
+                                color: colors.textSecondary,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 32),
           if (_installSuccess) ...[
             FilledButton.icon(

@@ -151,4 +151,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get terminalSend => 'Send';
+
+  @override
+  String get errorLogTitle => 'Error log';
 }

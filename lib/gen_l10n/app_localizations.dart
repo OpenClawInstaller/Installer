@@ -361,6 +361,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send'**
   String get terminalSend;
+
+  /// No description provided for @errorLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error log'**
+  String get errorLogTitle;
 }
 
 class _AppLocalizationsDelegate

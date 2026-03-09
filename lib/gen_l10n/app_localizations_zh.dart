@@ -143,4 +143,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get terminalSend => '发送';
+
+  @override
+  String get errorLogTitle => '错误日志';
 }
