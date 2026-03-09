@@ -52,6 +52,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
+  flutter_launcher_icons: ^0.14.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -94,3 +96,21 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  # 桌面通用图标（请确保该文件存在）
+  image_path: "assets/icon/app_icon_desktop.png"
+
+  # 明确不开启非桌面平台
+  android: false
+  ios: false
+  web:
+    generate: false
+
+  # 只生成桌面端图标
+  macos:
+    generate: true
+  windows:
+    generate: true
+  linux:
+    generate: true
