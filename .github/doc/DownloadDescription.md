@@ -1,9 +1,9 @@
 # OpenClaw Installer
 
-OpenClaw Installer 是 OpenClaw 的图形化安装程序，支持本地安装和通过 Docker 远程部署。
+OpenClaw Installer is the graphical installer for OpenClaw, supporting local installation and remote deployment via Docker.
 
-## 下载说明
+## Download Instructions
 
-- **Windows**: `OpenClawInstaller-Setup.exe` (安装包) / `.msix` (应用商店) / `windows-release.zip` (便携版)
+- **Windows**: `OpenClawInstaller-Setup.exe` (Installer) / `.msix` (Microsoft Store) / `windows-release.zip` (Portable)
 - **macOS**: `openclaw_installer.dmg`
 - **Linux**: `linux-release.zip` / `.deb` / `.rpm` / `.AppImage` / `OpenClawInstaller.flatpak` / `OpenClawInstaller-Linux-Portable.tar.gz`
