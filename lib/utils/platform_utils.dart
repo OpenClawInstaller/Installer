@@ -6,6 +6,9 @@ class PlatformUtils {
   static bool get isMacOS => Platform.isMacOS;
   static bool get isLinux => Platform.isLinux;
 
+  /// 是否为桌面平台（支持交互式终端）
+  static bool get isDesktop => isWindows || isMacOS || isLinux;
+
   static String get platformName {
     if (isWindows) return 'Windows';
     if (isMacOS) return 'macOS';

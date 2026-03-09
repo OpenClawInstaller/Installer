@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:openclaw_installer/gen_l10n/app_localizations.dart';
 import '../services/installer_service.dart';
 import '../services/download_service.dart';
+import '../services/interactive_process_runner.dart';
 import '../utils/platform_utils.dart';
 import '../theme/app_theme.dart';
 
@@ -42,11 +43,26 @@ class _InstallerScreenState extends State<InstallerScreen> {
   File? _downloadedFile;
   String? _downloadError;
 
+  /// 桌面平台交互式进程（支持实时输出 + 用户输入）
+  InteractiveProcessRunner? _interactiveRunner;
+  StreamSubscription<String>? _outputSubscription;
+  final _terminalInputController = TextEditingController();
+  final _terminalScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _checkEnvironment();
     _loadUrls();
+  }
+
+  @override
+  void dispose() {
+    _outputSubscription?.cancel();
+    _interactiveRunner?.kill();
+    _terminalInputController.dispose();
+    _terminalScrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadUrls() async {
@@ -116,8 +132,75 @@ class _InstallerScreenState extends State<InstallerScreen> {
     setState(() {
       _isInstalling = true;
       _logLines.clear();
+      _interactiveRunner = null;
+    });
+    if (_outputSubscription != null) {
+      await _outputSubscription!.cancel();
+      _outputSubscription = null;
+    }
+
+    _terminalInputController.clear();
+
+    if (PlatformUtils.isDesktop) {
+      await _startInstallInteractive();
+    } else {
+      await _startInstallStream();
+    }
+  }
+
+  Future<void> _startInstallInteractive() async {
+    final result = await InstallerService.startInteractiveInstall(_installType!);
+    if (!mounted || result == null) {
+      _startInstallStream();
+      return;
+    }
+
+    setState(() => _logLines.addAll(result.initialLines));
+    _interactiveRunner = result.runner;
+
+    _outputSubscription = result.runner.outputStream.listen((line) {
+      if (!mounted) return;
+      setState(() => _logLines.add(line));
+      _scrollToTerminalBottom();
     });
 
+    result.runner.exitCodeFuture.then((code) {
+      if (!mounted) return;
+      setState(() {
+        _logLines.add(''); // 空行分隔
+        _logLines.add('[进程已退出，退出码: $code]');
+        _isInstalling = false;
+        _installSuccess = _logLines.any((l) =>
+            l.contains('成功') || l.contains('已启动') || l.contains('完成') ||
+            l.contains('success') || l.contains('started') || l.contains('complete'));
+        _currentStep = 3;
+      });
+      _outputSubscription?.cancel();
+      _interactiveRunner = null;
+    });
+  }
+
+  void _scrollToTerminalBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_terminalScrollController.hasClients) {
+        _terminalScrollController.jumpTo(_terminalScrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
+  void _sendTerminalInput() {
+    final text = _terminalInputController.text.trim();
+    if (text.isEmpty || _interactiveRunner == null) return;
+
+    setState(() {
+      _logLines.add('\$ $text');
+    });
+    _terminalInputController.clear();
+    _interactiveRunner!.writeLine(text);
+    _scrollToTerminalBottom();
+  }
+
+  Future<void> _startInstallStream() async {
     Stream<String> stream;
     switch (_installType!) {
       case InstallType.script:
@@ -584,7 +667,7 @@ class _InstallerScreenState extends State<InstallerScreen> {
                   !_isDownloading &&
                   _downloadedFile == null)
                 FilledButton.icon(
-                  onPressed: () => _downloadEnv(downloadUrl, filename!),
+                  onPressed: () => _downloadEnv(downloadUrl, filename),
                   icon: const Icon(Icons.download, size: 20),
                   label: Text(l10n.builtinDownload),
                   style: FilledButton.styleFrom(
@@ -613,25 +696,25 @@ class _InstallerScreenState extends State<InstallerScreen> {
   }
 
   Widget _buildInstallStep(AppLocalizations l10n, AppThemeColors colors) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            _installType == InstallType.local
-                ? l10n.localInstallTitle
-                : _installType == InstallType.docker
-                    ? l10n.dockerInstallTitle
-                    : l10n.scriptInstallTitle,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: colors.textPrimary,
+    if (!_isInstalling && _logLines.isEmpty) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              _installType == InstallType.local
+                  ? l10n.localInstallTitle
+                  : _installType == InstallType.docker
+                      ? l10n.dockerInstallTitle
+                      : l10n.scriptInstallTitle,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: colors.textPrimary,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          if (!_isInstalling && _logLines.isEmpty) ...[
+            const SizedBox(height: 24),
             FilledButton(
               onPressed: _startInstall,
               style: FilledButton.styleFrom(
@@ -650,61 +733,134 @@ class _InstallerScreenState extends State<InstallerScreen> {
               ),
               child: Text(l10n.back),
             ),
-          ]
-          else ...[
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_isInstalling)
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colors.textSecondary,
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            _installType == InstallType.local
+                ? l10n.localInstallTitle
+                : _installType == InstallType.docker
+                    ? l10n.dockerInstallTitle
+                    : l10n.scriptInstallTitle,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: colors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Expanded(
+            child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_isInstalling)
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: colors.textSecondary,
+                            ),
                           ),
+                          const SizedBox(width: 12),
+                          Text(
+                            l10n.installing,
+                            style: TextStyle(color: colors.textPrimary),
+                          ),
+                        ],
+                      )
+                    else
+                      Text(
+                        l10n.installComplete,
+                        style: TextStyle(
+                          color: _installSuccess
+                              ? colors.successColor
+                              : colors.warningColor,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          l10n.installing,
-                          style: TextStyle(color: colors.textPrimary),
+                      ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        controller: _terminalScrollController,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _logLines
+                              .map((line) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      line,
+                                      style: TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 12,
+                                        color: colors.textSecondary,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
                         ),
-                      ],
-                    )
-                  else
-                    Text(
-                      l10n.installComplete,
-                      style: TextStyle(
-                        color: _installSuccess
-                            ? colors.successColor
-                            : colors.warningColor,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  const SizedBox(height: 16),
-                  ..._logLines.map((line) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          line,
-                          style: TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 12,
-                            color: colors.textSecondary,
-                          ),
+                    if (_isInstalling && _interactiveRunner != null) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      )),
-                ],
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _terminalInputController,
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 12,
+                                  color: colors.textPrimary,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: l10n.terminalInputHint,
+                                  hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: colors.textMuted,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                onSubmitted: (_) => _sendTerminalInput(),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              icon: Icon(Icons.send, size: 18, color: colors.linkColor),
+                              onPressed: _sendTerminalInput,
+                              tooltip: l10n.terminalSend,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
-          ],
         ],
       ),
     );

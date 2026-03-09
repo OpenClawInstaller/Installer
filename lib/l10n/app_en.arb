@@ -48,5 +48,7 @@
   "installSuccessDesc": "OpenClaw has been installed successfully. You can open the control panel to complete initial setup.",
   "installEndedDesc": "Please check the log above for details. Visit openclaw.ai for help.",
   "openControlPanel": "Open control panel",
-  "reinstall": "Reinstall"
+  "reinstall": "Reinstall",
+  "terminalInputHint": "Type here and press Enter to send input to the process",
+  "terminalSend": "Send"
 }

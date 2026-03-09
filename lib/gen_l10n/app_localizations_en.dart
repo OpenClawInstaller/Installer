@@ -144,4 +144,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reinstall => 'Reinstall';
+
+  @override
+  String get terminalInputHint =>
+      'Type here and press Enter to send input to the process';
+
+  @override
+  String get terminalSend => 'Send';
 }

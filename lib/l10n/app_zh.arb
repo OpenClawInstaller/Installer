@@ -41,5 +41,7 @@
   "installSuccessDesc": "OpenClaw 已成功安装。您可以打开控制面板完成首次配置。",
   "installEndedDesc": "请查看上方日志了解详情。如需帮助请访问 openclaw.ai",
   "openControlPanel": "打开控制面板",
-  "reinstall": "重新安装"
+  "reinstall": "重新安装",
+  "terminalInputHint": "在此输入并按回车发送到进程",
+  "terminalSend": "发送"
 }

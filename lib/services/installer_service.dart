@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:openclaw_installer/utils/platform_utils.dart';
+
+import 'interactive_process_runner.dart';
+
 /// 安装类型
 enum InstallType { local, docker, script }
 
@@ -447,6 +451,114 @@ OpenClaw Docker 部署
       yield '尝试使用 npm 安装...';
       yield* installLocal();
     }
+  }
+
+  /// 启动交互式安装（桌面平台：macOS/Windows/Linux）
+  /// 返回 (初始日志行, 交互式进程)，非桌面平台返回 null
+  static Future<({List<String> initialLines, InteractiveProcessRunner runner})?> startInteractiveInstall(InstallType type) async {
+    if (!PlatformUtils.isDesktop) return null;
+
+    switch (type) {
+      case InstallType.script:
+        return _startScriptInteractive();
+      case InstallType.local:
+        return _startLocalInteractive();
+      case InstallType.docker:
+        return _startDockerInteractive();
+    }
+  }
+
+  static Future<({List<String> initialLines, InteractiveProcessRunner runner})> _startScriptInteractive() async {
+    final initialLines = <String>['正在下载并执行官方安装脚本...'];
+
+    if (Platform.isWindows) {
+      initialLines.add('执行: iwr -useb https://openclaw.ai/install.ps1 | iex');
+      final runner = await InteractiveProcessRunner.start(
+        executable: 'powershell',
+        arguments: [
+          '-NoProfile',
+          '-ExecutionPolicy',
+          'Bypass',
+          '-Command',
+          'iwr -useb https://openclaw.ai/install.ps1 | iex',
+        ],
+        runInShell: true,
+      );
+      return (initialLines: initialLines, runner: runner);
+    }
+
+    initialLines.add('执行: curl -fsSL https://openclaw.ai/install.sh | bash');
+    final runner = await InteractiveProcessRunner.start(
+      executable: 'bash',
+      arguments: ['-c', 'curl -fsSL https://openclaw.ai/install.sh | bash'],
+      runInShell: true,
+    );
+    return (initialLines: initialLines, runner: runner);
+  }
+
+  static Future<({List<String> initialLines, InteractiveProcessRunner runner})> _startLocalInteractive() async {
+    const command = 'npm install -g openclaw@latest && openclaw onboard --install-daemon';
+    final initialLines = <String>['正在通过 npm 安装 OpenClaw...', '执行: $command'];
+
+    if (Platform.isMacOS || Platform.isLinux) {
+      final shell = Platform.environment['SHELL'] ?? '/bin/zsh';
+      final runner = await InteractiveProcessRunner.start(
+        executable: shell,
+        arguments: ['-l', '-c', command],
+        runInShell: false,
+      );
+      return (initialLines: initialLines, runner: runner);
+    }
+
+    final runner = await InteractiveProcessRunner.startShellCommand(command: command);
+    return (initialLines: initialLines, runner: runner);
+  }
+
+  static Future<({List<String> initialLines, InteractiveProcessRunner runner})> _startDockerInteractive() async {
+    final initialLines = <String>['正在拉取 OpenClaw Docker 镜像...'];
+
+    await Process.run('docker', ['stop', 'openclaw']);
+    await Process.run('docker', ['rm', 'openclaw']);
+
+    final useCompose = await checkDockerCompose();
+    final projectDir = await _getOpenClawDockerDir();
+    final dir = Directory(projectDir);
+
+    if (useCompose) {
+      if (!await dir.exists()) await dir.create(recursive: true);
+
+      final composeFile = File('$projectDir/docker-compose.yml');
+      await composeFile.writeAsString(_getDockerComposeContent());
+      initialLines.add('已创建配置: $projectDir/docker-compose.yml');
+
+      await Directory('$projectDir/data').create(recursive: true);
+      await Directory('$projectDir/config').create(recursive: true);
+      await File('$projectDir/README.txt').writeAsString(_getDockerReadmeContent());
+
+      initialLines.add('检测到 Docker Compose，使用 Compose 方式部署...');
+      initialLines.add('执行: docker pull ghcr.io/openclaw/openclaw:latest && docker compose -f "$projectDir/docker-compose.yml" up -d');
+
+      final command = 'docker pull ghcr.io/openclaw/openclaw:latest && docker compose -f "$projectDir/docker-compose.yml" up -d';
+      final runner = await InteractiveProcessRunner.startShellCommand(
+        command: command,
+        workingDirectory: projectDir,
+      );
+      return (initialLines: initialLines, runner: runner);
+    }
+
+    initialLines.add('未检测到 Docker Compose，使用 docker run 方式...');
+    final home = Platform.environment['HOME'] ??
+        Platform.environment['USERPROFILE'] ??
+        (Platform.environment['HOMEDRIVE'] ?? '') + (Platform.environment['HOMEPATH'] ?? '.');
+    final volumePath = Platform.isWindows ? '${home.replaceAll('\\', '/')}/.openclaw' : '$home/.openclaw';
+
+    var cmd = 'docker pull ghcr.io/openclaw/openclaw:latest && docker run -d --name openclaw -v "$volumePath:/home/node/.openclaw" -p 18789:18789 --restart unless-stopped -e NODE_ENV=production -e TZ=Asia/Shanghai ';
+    if (!Platform.isWindows) cmd += '-v /var/run/docker.sock:/var/run/docker.sock ';
+    cmd += 'ghcr.io/openclaw/openclaw:latest';
+
+    initialLines.add('执行: $cmd');
+    final runner = await InteractiveProcessRunner.startShellCommand(command: cmd);
+    return (initialLines: initialLines, runner: runner);
   }
 
   /// 打开 Dashboard

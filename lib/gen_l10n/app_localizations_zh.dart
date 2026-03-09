@@ -137,4 +137,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reinstall => '重新安装';
+
+  @override
+  String get terminalInputHint => '在此输入并按回车发送到进程';
+
+  @override
+  String get terminalSend => '发送';
 }

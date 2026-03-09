@@ -349,6 +349,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reinstall'**
   String get reinstall;
+
+  /// No description provided for @terminalInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type here and press Enter to send input to the process'**
+  String get terminalInputHint;
+
+  /// No description provided for @terminalSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get terminalSend;
 }
 
 class _AppLocalizationsDelegate
