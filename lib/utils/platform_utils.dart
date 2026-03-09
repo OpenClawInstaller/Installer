@@ -92,4 +92,45 @@ class PlatformUtils {
 
   /// 是否支持官方脚本安装（macOS/Linux/Windows）
   static bool get supportsOfficialScript => true;
+
+  /// 在系统终端中执行命令（新开终端窗口，用户可交互）
+  /// 用于 openclaw onboard 等需要用户输入的交互式命令
+  static Future<bool> openSystemTerminalWithCommand(String command) async {
+    try {
+      if (isWindows) {
+        // cmd /k 保持窗口打开，用户可交互
+        await Process.run('cmd', ['/c', 'start', 'cmd', '/k', command]);
+        return true;
+      }
+      if (isMacOS) {
+        // 使用 osascript 在 Terminal.app 新窗口中执行
+        final escaped = command.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+        await Process.run('osascript', [
+          '-e',
+          'tell application "Terminal" to do script "$escaped"',
+        ]);
+        return true;
+      }
+      if (isLinux) {
+        // 尝试常见终端模拟器，exec bash 保持窗口打开
+        final cmdWithBash = '$command; exec bash';
+        final attempts = [
+          ['gnome-terminal', '--', 'bash', '-c', cmdWithBash],
+          ['xfce4-terminal', '-e', 'bash -c "$cmdWithBash"'],
+          ['konsole', '-e', cmdWithBash],
+          ['xterm', '-e', cmdWithBash],
+        ];
+        for (final args in attempts) {
+          try {
+            final result = await Process.run(args.first, args.skip(1).toList());
+            if (result.exitCode == 0) return true;
+          } catch (_) {
+            continue;
+          }
+        }
+        return false;
+      }
+    } catch (_) {}
+    return false;
+  }
 }

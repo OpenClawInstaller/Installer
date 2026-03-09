@@ -60,7 +60,7 @@ class InteractiveProcessRunner {
 
     void listenStream(Stream<List<int>> stream) {
       stream
-          .transform(utf8.decoder)
+          .transform(const Utf8Decoder(allowMalformed: true))
           .transform(const LineSplitter())
           .listen(
             (line) => outputController.add(line),
@@ -81,14 +81,15 @@ class InteractiveProcessRunner {
   }
 
   /// 使用 shell 执行单条命令（跨平台）
+  /// Windows 使用 cmd（支持 &&，且 PowerShell 5.1 不支持 &&）
   static Future<InteractiveProcessRunner> startShellCommand({
     required String command,
     String? workingDirectory,
   }) async {
     if (Platform.isWindows) {
       return start(
-        executable: 'powershell',
-        arguments: ['-NoProfile', '-Command', command],
+        executable: 'cmd',
+        arguments: ['/c', command],
         workingDirectory: workingDirectory,
         runInShell: false,
       );

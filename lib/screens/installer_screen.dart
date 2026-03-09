@@ -164,7 +164,22 @@ class _InstallerScreenState extends State<InstallerScreen> {
       _scrollToTerminalBottom();
     });
 
-    result.runner.exitCodeFuture.then((code) {
+    result.runner.exitCodeFuture.then((code) async {
+      if (!mounted) return;
+      final isLocal = _installType == InstallType.local;
+      final npmSuccess = isLocal && code == 0;
+
+      if (npmSuccess) {
+        setState(() => _logLines.add('npm 安装成功，正在打开系统终端运行配置向导...'));
+        final opened = await InstallerService.runOnboardInSystemTerminal();
+        if (!mounted) return;
+        setState(() {
+          _logLines.add(opened
+              ? '已打开系统终端，请在终端中完成配置向导。'
+              : '请手动在终端中运行: ${InstallerService.onboardCommand}');
+        });
+      }
+
       if (!mounted) return;
       setState(() {
         _logLines.add(''); // 空行分隔

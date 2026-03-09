@@ -31,6 +31,9 @@ class EnvCheckResult {
 
 /// OpenClaw 安装服务
 class InstallerService {
+  /// openclaw onboard 命令（需在系统终端中执行以支持用户交互）
+  static const String onboardCommand = 'openclaw onboard --install-daemon';
+
   /// 解析 node 版本字符串，返回 (是否满足22+, 版本号)
   static ({bool ok, String version}) _parseNodeVersion(String stdout) {
     final version = stdout.trim().replaceAll('v', '');
@@ -175,6 +178,10 @@ class InstallerService {
     );
   }
 
+  /// 在系统终端中运行配置向导（用户可交互）
+  static Future<bool> runOnboardInSystemTerminal() =>
+      PlatformUtils.openSystemTerminalWithCommand(onboardCommand);
+
   /// 在 macOS/Linux 上通过 login shell 执行命令（确保 nvm/fnm 等 PATH 生效）
   static Future<ProcessResult> _runWithLoginShell(String command) async {
     final shell = Platform.environment['SHELL'] ?? '/bin/zsh';
@@ -197,21 +204,13 @@ class InstallerService {
         return;
       }
       yield 'OpenClaw 安装成功！';
-      yield '正在运行配置向导...';
+      yield '正在打开系统终端以运行配置向导（需用户交互）...';
 
-    ProcessResult onboardResult;
-    if (Platform.isMacOS || Platform.isLinux) {
-      onboardResult = await _runWithLoginShell('openclaw onboard --install-daemon');
-    } else {
-      onboardResult = await Process.run(
-        'openclaw',
-        ['onboard', '--install-daemon'],
-      );
-    }
-      if (onboardResult.exitCode != 0) {
-        yield '配置向导可能需要手动运行: openclaw onboard --install-daemon';
+    final opened = await runOnboardInSystemTerminal();
+      if (opened) {
+        yield '已打开系统终端，请在终端中完成配置向导。';
       } else {
-        yield '配置完成！';
+        yield '请手动在终端中运行: $onboardCommand';
       }
     } catch (e) {
       yield '安装出错: $e';
@@ -433,14 +432,12 @@ OpenClaw Docker 部署
         }
 
         yield '安装完成！';
-        yield '正在运行配置向导...';
-        final onboardResult = Platform.isMacOS || Platform.isLinux
-            ? await _runWithLoginShell('openclaw onboard --install-daemon')
-            : await Process.run('openclaw', ['onboard', '--install-daemon']);
-        if (onboardResult.exitCode != 0) {
-          yield '请手动运行: openclaw onboard --install-daemon';
+        yield '正在打开系统终端以运行配置向导（需用户交互）...';
+        final opened = await runOnboardInSystemTerminal();
+        if (opened) {
+          yield '已打开系统终端，请在终端中完成配置向导。';
         } else {
-          yield '配置完成！';
+          yield '请手动在终端中运行: $onboardCommand';
         }
         return;
       }
@@ -497,8 +494,13 @@ OpenClaw Docker 部署
   }
 
   static Future<({List<String> initialLines, InteractiveProcessRunner runner})> _startLocalInteractive() async {
-    const command = 'npm install -g openclaw@latest && openclaw onboard --install-daemon';
-    final initialLines = <String>['正在通过 npm 安装 OpenClaw...', '执行: $command'];
+    // 仅运行 npm 安装，onboard 会在系统终端中执行（需用户交互）
+    const command = 'npm install -g openclaw@latest';
+    final initialLines = <String>[
+      '正在通过 npm 安装 OpenClaw...',
+      '执行: $command',
+      '安装完成后将自动打开系统终端运行配置向导。',
+    ];
 
     if (Platform.isMacOS || Platform.isLinux) {
       final shell = Platform.environment['SHELL'] ?? '/bin/zsh';
