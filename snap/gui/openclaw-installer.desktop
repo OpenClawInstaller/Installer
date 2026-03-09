@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=OpenClaw Installer
+Name[zh_CN]=OpenClaw 安装器
+Comment=OpenClaw Installer - GUI installer for OpenClaw deployment
+Comment[zh_CN]=OpenClaw 安装器 - OpenClaw 部署的图形安装程序
+Exec=openclaw_installer
+Icon=${SNAP}/meta/gui/openclaw-installer.png
+Terminal=false
+Type=Application
+Categories=Utility;

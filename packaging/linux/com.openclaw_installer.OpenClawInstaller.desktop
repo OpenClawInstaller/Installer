@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=OpenClaw Installer
+Name[zh_CN]=OpenClaw 安装器
+Comment=OpenClaw Installer - GUI installer for OpenClaw deployment
+Comment[zh_CN]=OpenClaw 安装器 - OpenClaw 部署的图形安装程序
+Categories=Utility;
+
+Icon=com.openclaw_installer.OpenClawInstaller
+Exec=openclaw_installer
+Terminal=false
+StartupWMClass=openclaw_installer

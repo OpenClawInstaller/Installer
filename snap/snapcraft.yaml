@@ -1,0 +1,22 @@
+name: openclaw-installer
+version: 1.0.0
+summary: OpenClaw Installer
+description: OpenClaw Installer - GUI installer for OpenClaw deployment.
+
+confinement: strict
+base: core22
+grade: stable
+
+apps:
+  openclaw-installer:
+    command: openclaw_installer
+    extensions: [gnome]
+    plugs:
+      - network
+      - network-bind
+
+parts:
+  openclaw-installer:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart
