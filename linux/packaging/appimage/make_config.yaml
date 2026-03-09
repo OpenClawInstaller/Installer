@@ -1,0 +1,15 @@
+display_name: OpenClaw Installer
+# AppImage 构建需要图标文件，使用 linux/assets/icon.png 占位图
+icon: linux/assets/icon.png
+
+keywords:
+  - OpenClaw
+  - Installer
+  - GUI
+
+generic_name: OpenClaw GUI Installer
+
+categories:
+  - Utility
+
+startup_notify: true

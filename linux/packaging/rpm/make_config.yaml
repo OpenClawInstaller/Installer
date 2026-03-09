@@ -1,0 +1,32 @@
+display_name: OpenClaw Installer
+
+summary: OpenClaw Installer - GUI installer for OpenClaw deployment
+group: Applications/Utilities
+vendor: iotserv
+packager: iotserv
+packagerEmail: iotserv@users.noreply.github.com
+license: MIT
+url: https://github.com/iotserv/openclaw_installer
+
+# Flutter Linux 桌面应用常见依赖
+requires:
+  - gtk3 >= 3.10
+  - libstdc++ >= 4.9
+  - glib2 >= 2.50
+  - libc.so.6
+
+keywords:
+  - OpenClaw
+  - Installer
+  - GUI
+
+generic_name: OpenClaw GUI Installer
+
+categories:
+  - Utility
+
+startup_notify: true
+
+# 若存在图标可取消注释
+# icon: linux/assets/icon.png
+# metainfo: packaging/linux/com.openclaw_installer.OpenClawInstaller.metainfo.xml

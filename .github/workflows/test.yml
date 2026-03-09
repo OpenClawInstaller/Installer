@@ -100,11 +100,11 @@ jobs:
         with:
           name: windows-release.zip
           path: ./build/windows/x64/runner/Release
-      - run: dart run msix:create
-      - uses: actions/upload-artifact@v4
-        with:
-          name: openclaw-installer.msix
-          path: build/windows/x64/runner/Release/*.msix
+#      - run: dart run msix:create
+#      - uses: actions/upload-artifact@v4
+#        with:
+#          name: openclaw-installer.msix
+#          path: build/windows/x64/runner/Release/*.msix
       - name: Building the installer
         run: |
           "%programfiles(x86)%\Inno Setup 6\iscc.exe" "windows-setup.iss"

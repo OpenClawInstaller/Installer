@@ -1,0 +1,35 @@
+display_name: OpenClaw Installer
+package_name: openclaw-installer
+
+maintainer:
+  name: iotserv
+  email: iotserv@users.noreply.github.com
+
+priority: optional
+section: x11
+installed_size: 20000
+essential: false
+
+# Flutter Linux 桌面应用常见依赖
+dependencies:
+  - libgtk-3-0 (>= 3.10)
+  - libstdc++6 (>= 4.9)
+  - libglib2.0-0 (>= 2.50)
+  - libc6 (>= 2.27)
+
+keywords:
+  - OpenClaw
+  - Installer
+  - GUI
+
+generic_name: OpenClaw GUI Installer
+
+categories:
+  - Utility
+
+startup_notify: true
+startup_wm_class: openclaw_installer
+
+# 若存在图标可取消注释
+# icon: packaging/linux/icons/256x256/com.openclaw_installer.OpenClawInstaller.png
+# metainfo: packaging/linux/com.openclaw_installer.OpenClawInstaller.metainfo.xml
