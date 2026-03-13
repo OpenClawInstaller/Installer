@@ -44,5 +44,25 @@
   "reinstall": "重新安装",
   "terminalInputHint": "在此输入并按回车发送到进程",
   "terminalSend": "发送",
-  "errorLogTitle": "错误日志"
+  "errorLogTitle": "错误日志",
+  "openClawInstalled": "OpenClaw 已安装",
+  "openClawInstalledDesc": "检测到 OpenClaw，可进行配置或卸载",
+  "openClawVersion": "版本：{version}",
+  "@openClawVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "openConfigWizard": "打开配置向导",
+  "openConfigWizardDesc": "在终端中运行 openclaw config 进行配置",
+  "openControlPanel": "打开控制面板",
+  "openControlPanelDesc": "访问 Web 控制面板 http://127.0.0.1:18789/",
+  "uninstallOpenClaw": "卸载 OpenClaw",
+  "uninstallOpenClawDesc": "在终端中执行卸载（会提示确认）",
+  "uninstallOpenClawDocker": "卸载 Docker 版 OpenClaw",
+  "uninstallOpenClawDockerDesc": "停止并删除 OpenClaw 容器",
+  "docsLink": "API 文档",
+  "docsLinkLabel": "docs.openclaw.ai"
 }

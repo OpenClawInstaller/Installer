@@ -146,4 +146,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorLogTitle => '错误日志';
+
+  @override
+  String get openClawInstalled => 'OpenClaw 已安装';
+
+  @override
+  String get openClawInstalledDesc => '检测到 OpenClaw，可进行配置或卸载';
+
+  @override
+  String openClawVersion(String version) {
+    return '版本：$version';
+  }
+
+  @override
+  String get openConfigWizard => '打开配置向导';
+
+  @override
+  String get openConfigWizardDesc => '在终端中运行 openclaw config 进行配置';
+
+  @override
+  String get openControlPanelDesc => '访问 Web 控制面板 http://127.0.0.1:18789/';
+
+  @override
+  String get uninstallOpenClaw => '卸载 OpenClaw';
+
+  @override
+  String get uninstallOpenClawDesc => '在终端中执行卸载（会提示确认）';
+
+  @override
+  String get uninstallOpenClawDocker => '卸载 Docker 版 OpenClaw';
+
+  @override
+  String get uninstallOpenClawDockerDesc => '停止并删除 OpenClaw 容器';
+
+  @override
+  String get docsLink => 'API 文档';
+
+  @override
+  String get docsLinkLabel => 'docs.openclaw.ai';
 }

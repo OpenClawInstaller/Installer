@@ -51,5 +51,24 @@
   "reinstall": "Reinstall",
   "terminalInputHint": "Type here and press Enter to send input to the process",
   "terminalSend": "Send",
-  "errorLogTitle": "Error log"
+  "errorLogTitle": "Error log",
+  "openClawInstalled": "OpenClaw Installed",
+  "openClawInstalledDesc": "OpenClaw detected. Configure or uninstall.",
+  "openClawVersion": "Version: {version}",
+  "@openClawVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "openConfigWizard": "Open Config Wizard",
+  "openConfigWizardDesc": "Run openclaw config in terminal",
+  "openControlPanelDesc": "Open Web control panel at http://127.0.0.1:18789/",
+  "uninstallOpenClaw": "Uninstall OpenClaw",
+  "uninstallOpenClawDesc": "Run uninstall in terminal (will prompt for confirmation)",
+  "uninstallOpenClawDocker": "Uninstall Docker OpenClaw",
+  "uninstallOpenClawDockerDesc": "Stop and remove OpenClaw container",
+  "docsLink": "API Docs",
+  "docsLinkLabel": "docs.openclaw.ai"
 }

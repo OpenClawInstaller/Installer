@@ -7,6 +7,9 @@ import 'interactive_process_runner.dart';
 /// 安装类型
 enum InstallType { local, docker, script }
 
+/// OpenClaw 安装来源
+enum OpenClawInstallSource { npm, docker, unknown }
+
 /// 环境检测结果
 class EnvCheckResult {
   final bool nodeInstalled;
@@ -15,6 +18,10 @@ class EnvCheckResult {
   final String? dockerVersion;
   final bool openclawInstalled;
   final String? openclawVersion;
+  /// OpenClaw 是否通过 Docker 运行（容器存在即视为已安装）
+  final bool openclawDockerRunning;
+  /// 安装来源：npm CLI 或 Docker 容器
+  final OpenClawInstallSource openclawSource;
 
   const EnvCheckResult({
     required this.nodeInstalled,
@@ -23,10 +30,15 @@ class EnvCheckResult {
     this.dockerVersion,
     required this.openclawInstalled,
     this.openclawVersion,
+    this.openclawDockerRunning = false,
+    this.openclawSource = OpenClawInstallSource.unknown,
   });
 
   bool get canInstallLocal => nodeInstalled;
   bool get canInstallDocker => dockerInstalled;
+
+  /// 是否已安装 OpenClaw（npm 或 Docker）
+  bool get hasOpenClaw => openclawInstalled || openclawDockerRunning;
 }
 
 /// OpenClaw 安装服务
@@ -150,7 +162,7 @@ class InstallerService {
     return false;
   }
 
-  /// 检测 OpenClaw
+  /// 检测 OpenClaw (npm 全局安装)
   static Future<({bool installed, String? version})> checkOpenClaw() async {
     try {
       final result = await Process.run('openclaw', ['--version']);
@@ -162,11 +174,34 @@ class InstallerService {
     return (installed: false, version: null);
   }
 
+  /// 检测 OpenClaw Docker 容器是否在运行
+  static Future<bool> checkOpenClawDocker() async {
+    try {
+      final result = await Process.run(
+        'docker',
+        ['ps', '-a', '--filter', 'name=openclaw', '--format', '{{.Names}}'],
+      );
+      if (result.exitCode == 0) {
+        final output = (result.stdout as String).trim();
+        return output.contains('openclaw');
+      }
+    } catch (_) {}
+    return false;
+  }
+
   /// 全面环境检测
   static Future<EnvCheckResult> checkEnvironment() async {
     final node = await checkNodeJs();
     final docker = await checkDocker();
     final openclaw = await checkOpenClaw();
+    final openclawDocker = await checkOpenClawDocker();
+
+    OpenClawInstallSource source = OpenClawInstallSource.unknown;
+    if (openclaw.installed) {
+      source = OpenClawInstallSource.npm;
+    } else if (openclawDocker) {
+      source = OpenClawInstallSource.docker;
+    }
 
     return EnvCheckResult(
       nodeInstalled: node.installed,
@@ -175,7 +210,55 @@ class InstallerService {
       dockerVersion: docker.version,
       openclawInstalled: openclaw.installed,
       openclawVersion: openclaw.version,
+      openclawDockerRunning: openclawDocker,
+      openclawSource: source,
     );
+  }
+
+  /// 在系统终端中运行配置向导（openclaw config）
+  static Future<bool> runConfigWizardInTerminal() =>
+      PlatformUtils.openSystemTerminalWithCommand('openclaw config');
+
+  /// 在系统终端中运行卸载（交互式）
+  static Future<bool> runUninstallInTerminal() =>
+      PlatformUtils.openSystemTerminalWithCommand('openclaw uninstall');
+
+  /// 卸载 Docker 版 OpenClaw
+  static Future<({bool success, String? error})> uninstallDocker() async {
+    try {
+      final projectDir = await _getOpenClawDockerDir();
+      final composeFile = File('$projectDir/docker-compose.yml');
+      if (await composeFile.exists()) {
+        final result = await Process.run(
+          'docker',
+          ['compose', '-f', composeFile.path, 'down', '-v'],
+          workingDirectory: projectDir,
+        );
+        if (result.exitCode == 0) {
+          return (success: true, error: null);
+        }
+        return (success: false, error: result.stderr.toString());
+      }
+      // 使用 docker run 安装的，直接 stop + rm
+      await Process.run('docker', ['stop', 'openclaw']);
+      final rmResult = await Process.run('docker', ['rm', 'openclaw']);
+      if (rmResult.exitCode == 0) {
+        return (success: true, error: null);
+      }
+      return (success: false, error: rmResult.stderr.toString());
+    } catch (e) {
+      return (success: false, error: e.toString());
+    }
+  }
+
+  /// 在系统终端中运行 Docker 卸载（供用户确认后执行）
+  static Future<bool> runDockerUninstallInTerminal() async {
+    final projectDir = await _getOpenClawDockerDir();
+    final composeFile = File('$projectDir/docker-compose.yml');
+    final cmd = await composeFile.exists()
+        ? 'cd "$projectDir" && docker compose down -v'
+        : 'docker stop openclaw && docker rm openclaw';
+    return PlatformUtils.openSystemTerminalWithCommand(cmd);
   }
 
   /// 在系统终端中运行配置向导（用户可交互）

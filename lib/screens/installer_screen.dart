@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:openclaw_installer/gen_l10n/app_localizations.dart';
-import '../services/installer_service.dart';
+import '../services/installer_service.dart'
+    show InstallerService, InstallType, EnvCheckResult, OpenClawInstallSource;
 import '../services/download_service.dart';
 import '../services/interactive_process_runner.dart';
 import '../utils/platform_utils.dart';
@@ -357,11 +358,18 @@ class _InstallerScreenState extends State<InstallerScreen> {
   }
 
   Widget _buildWelcomeStep(AppLocalizations l10n, AppThemeColors colors) {
+    final hasOpenClaw = _envResult?.hasOpenClaw ?? false;
+    final isDocker = _envResult?.openclawSource == OpenClawInstallSource.docker;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (hasOpenClaw) ...[
+            _buildInstalledSection(l10n, colors, isDocker),
+            const SizedBox(height: 32),
+          ],
           Text(
             l10n.selectInstallMethod,
             style: TextStyle(
@@ -416,6 +424,164 @@ class _InstallerScreenState extends State<InstallerScreen> {
                 decoration: TextDecoration.underline,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstalledSection(
+      AppLocalizations l10n, AppThemeColors colors, bool isDocker) {
+    final version = _envResult?.openclawVersion ?? 'Docker';
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: colors.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.successColor.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.check_circle, color: colors.successColor, size: 28),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.openClawInstalled,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      l10n.openClawVersion(version),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.refresh, color: colors.textSecondary),
+                onPressed: _checkEnvironment,
+                tooltip: l10n.recheck,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.openClawInstalledDesc,
+            style: TextStyle(
+              fontSize: 13,
+              color: colors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              if (!isDocker)
+                FilledButton.icon(
+                  onPressed: () async {
+                    await InstallerService.runConfigWizardInTerminal();
+                  },
+                  icon: const Icon(Icons.settings, size: 18),
+                  label: Text(l10n.openConfigWizard),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              FilledButton.icon(
+                onPressed: InstallerService.openDashboard,
+                icon: const Icon(Icons.dashboard, size: 18),
+                label: Text(l10n.openControlPanel),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              OutlinedButton.icon(
+                onPressed: () => _openUrl('https://docs.openclaw.ai'),
+                icon: const Icon(Icons.description, size: 18),
+                label: Text(l10n.docsLink),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: colors.textSecondary,
+                  side: BorderSide(color: colors.textMuted),
+                ),
+              ),
+              if (isDocker)
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(l10n.uninstallOpenClawDocker),
+                        content: Text(l10n.uninstallOpenClawDockerDesc),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: Text(l10n.back),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            child: Text(l10n.uninstallOpenClaw),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm == true && mounted) {
+                      await InstallerService.runDockerUninstallInTerminal();
+                    }
+                  },
+                  icon: Icon(Icons.delete_outline, size: 18, color: colors.warningColor),
+                  label: Text(l10n.uninstallOpenClawDocker),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colors.warningColor,
+                    side: BorderSide(color: colors.warningColor),
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(l10n.uninstallOpenClaw),
+                        content: Text(l10n.uninstallOpenClawDesc),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: Text(l10n.back),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            child: Text(l10n.uninstallOpenClaw),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm == true && mounted) {
+                      await InstallerService.runUninstallInTerminal();
+                    }
+                  },
+                  icon: Icon(Icons.delete_outline, size: 18, color: colors.warningColor),
+                  label: Text(l10n.uninstallOpenClaw),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colors.warningColor,
+                    side: BorderSide(color: colors.warningColor),
+                  ),
+                ),
+            ],
           ),
         ],
       ),

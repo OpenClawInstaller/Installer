@@ -154,4 +154,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLogTitle => 'Error log';
+
+  @override
+  String get openClawInstalled => 'OpenClaw Installed';
+
+  @override
+  String get openClawInstalledDesc =>
+      'OpenClaw detected. Configure or uninstall.';
+
+  @override
+  String openClawVersion(String version) {
+    return 'Version: $version';
+  }
+
+  @override
+  String get openConfigWizard => 'Open Config Wizard';
+
+  @override
+  String get openConfigWizardDesc => 'Run openclaw config in terminal';
+
+  @override
+  String get openControlPanelDesc =>
+      'Open Web control panel at http://127.0.0.1:18789/';
+
+  @override
+  String get uninstallOpenClaw => 'Uninstall OpenClaw';
+
+  @override
+  String get uninstallOpenClawDesc =>
+      'Run uninstall in terminal (will prompt for confirmation)';
+
+  @override
+  String get uninstallOpenClawDocker => 'Uninstall Docker OpenClaw';
+
+  @override
+  String get uninstallOpenClawDockerDesc =>
+      'Stop and remove OpenClaw container';
+
+  @override
+  String get docsLink => 'API Docs';
+
+  @override
+  String get docsLinkLabel => 'docs.openclaw.ai';
 }

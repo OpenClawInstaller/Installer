@@ -367,6 +367,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error log'**
   String get errorLogTitle;
+
+  /// No description provided for @openClawInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenClaw Installed'**
+  String get openClawInstalled;
+
+  /// No description provided for @openClawInstalledDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenClaw detected. Configure or uninstall.'**
+  String get openClawInstalledDesc;
+
+  /// No description provided for @openClawVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version: {version}'**
+  String openClawVersion(String version);
+
+  /// No description provided for @openConfigWizard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Config Wizard'**
+  String get openConfigWizard;
+
+  /// No description provided for @openConfigWizardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Run openclaw config in terminal'**
+  String get openConfigWizardDesc;
+
+  /// No description provided for @openControlPanelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Web control panel at http://127.0.0.1:18789/'**
+  String get openControlPanelDesc;
+
+  /// No description provided for @uninstallOpenClaw.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall OpenClaw'**
+  String get uninstallOpenClaw;
+
+  /// No description provided for @uninstallOpenClawDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Run uninstall in terminal (will prompt for confirmation)'**
+  String get uninstallOpenClawDesc;
+
+  /// No description provided for @uninstallOpenClawDocker.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstall Docker OpenClaw'**
+  String get uninstallOpenClawDocker;
+
+  /// No description provided for @uninstallOpenClawDockerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop and remove OpenClaw container'**
+  String get uninstallOpenClawDockerDesc;
+
+  /// No description provided for @docsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'API Docs'**
+  String get docsLink;
+
+  /// No description provided for @docsLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'docs.openclaw.ai'**
+  String get docsLinkLabel;
 }
 
 class _AppLocalizationsDelegate
